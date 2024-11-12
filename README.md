@@ -28,11 +28,11 @@ Follow these steps to set up and run the DiChoTienLoi API on your local machine.
    CLOUDINARY_API_SECRET=YOUR_CLOUDINARY_API_SECRET
 
 ## Step 3: Start Database Server
-    Make sure your database server is running and accessible before starting the API server.
+Make sure your database server is running and accessible before starting the API server.
 
 ## Step 4: Run the API
-    Run the following command to start the API server:
+Run the following command to start the API server:
 
     ```npm start
-    
+
 The API should now be running on the port specified in your .env file.
