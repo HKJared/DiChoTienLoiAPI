@@ -1,0 +1,218 @@
+-------------------AUTHENTICATION-------------------
+
+1. Register
+Path: /register
+Method: POST
+Header: 
+    {
+        Content-Type: "application/json"
+    }
+Body: 
+    JSON.stringify({
+        account: {
+            username:   string  (required),
+            password:   string  (required)
+        }
+    })
+Response:
+    {
+        message:"User registered successfully"
+    }    
+
+2. Login
+Path: /login
+Method: POST
+Header: 
+    {
+        Content-Type: "application/json"
+    }
+Body: 
+    JSON.stringify({
+        account: {
+            username:   string  (required),
+            password:   string  (required)
+        }
+    })
+Response:
+    {
+        message: "Đăng nhập thành công",
+        jwt: string 
+    }
+
+-------------------USER-------------------
+
+1. Uploads
+Path: /user/upload
+Method: POST
+Header: 
+    {
+        authentication: jwt
+    }
+Body:
+    formData:
+    // description (
+        Type: multipart/form-data,
+        FormData Fields:
+            files[]: Danh sách các tệp
+            keys[]: Danh sách khóa đại diện cho từng tệp
+    )
+Response:
+    {
+        key: file_url
+    }
+
+2. Info
+Path: /user/Info
+Method: GET
+Header: 
+    {
+        Content-Type: "application/json"
+        authentication: jwt
+    }
+
+
+-------------------USER-------------------
+I. MarketPlace Category
+1. GetData
+Path: /marketplace-categories
+Method: GET
+Header: 
+    {
+        Content-Type: "application/json"
+    }
+Response:
+    {
+        categories: [
+            {
+                id: int,
+                name: string,
+                image_url: string
+            }
+        ]
+    }
+
+II. MarketPlace Item    
+1. GetData
+Path: /marketplace-items
+Method: GET
+Header: 
+    {
+        Content-Type: "application/json"
+    }
+Response:
+    {
+        items: [
+            {
+                id: int,
+                category_id: int,
+                name: string,
+                image_url: string (NULL),
+                list_units: array
+            }
+        ]
+    }
+
+II. Recipe Category    
+1. GetData
+Path: /recipe-categories
+Method: GET
+Header: 
+    {
+        Content-Type: "application/json",
+        authentication: jwt
+    }
+Response:
+    {
+        items: [
+            {
+                id: int,
+                name: string,
+                image_url: string
+            }
+        ]
+    }
+
+II. Recipe   
+1. search
+Path: /recipes?keyword&page&itemsPerPage(&category_id NULL)
+Method: GET
+Header: 
+    {
+        Content-Type: "application/json",
+        authentication: jwt
+    }
+Response:
+    {
+        recipes: [
+            {
+                
+            }
+        ]
+    }
+
+
+
+-------------------ADMIN-------------------
+I. Authentication, Authorization
+adminstrator account: {
+    username:   "dichotienloi@admin",
+    password:   "dichotienloi@admin004370"
+}
+
+1. Login
+Path: /admin/login
+Method: POST
+Header: 
+    {
+        Content-Type: "application/json"
+    }
+Body: 
+    JSON.stringify({
+        account: {
+            username:   string  (required),
+            password:   string  (required)
+        }
+    })
+Response:
+    {
+        message: "Đăng nhập thành công",
+        refresh_token: string,
+        access_token: string 
+    }
+
+2. Refresh
+Path: /admin/refresh-token
+Method: GET
+Header: 
+    {
+        Content-Type: "application/json",
+        authentication: refresh_token
+    }
+Response:
+    {
+        access_token: string 
+    }
+
+II. MarketPlace Category
+1. Create 
+Path: /admin/marketplace-category
+Method: POST
+Headers:
+    {
+        Content-Type: "application/json"
+        authorization: access_token
+    }
+Body: 
+    {
+        new_category: {
+            name: string,
+            image_url: string
+        }
+    }
+Response:
+    {
+        message: "Tạo danh mục thành công.",
+        new_category
+    }
+
+2.
