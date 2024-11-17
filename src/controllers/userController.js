@@ -3,6 +3,7 @@ const JWTService = require("../utils/jwtService");
 const LogModel = require("../models/logModel");
 const UserModel = require("../models/userModel");
 const VerificationModel = require("../models/verificationModel");
+const { deleteFileFromCloudinary } = require('../utils/upload');
 
 function getLastChange(lastChange) {
     if (!lastChange) {
@@ -61,24 +62,21 @@ class UserController {
                 return res.status(400).json({ message: "Tài khoản đã tồn tại." })
             }
 
-            let phone_verification;
-            if (!user_id) {
-                phone_verification = await VerificationModel.getPhoneVerificationById(account.phone_verification_id);
+            // let phone_verification;
+            // if (!user_id) {
+            //     phone_verification = await VerificationModel.getPhoneVerificationById(account.phone_verification_id);
 
-                if (!phone_verification.is_verified) {
-                    await LogModel.updateDetailLog(`Chưa xác thực số điện thoại.`, log_id);
-                    return res.status(400).json({ message: "Số điện thoại của bạn chưa được xác thực, vui lòng quay lại trang đăng ký." })
-                }
-            }
+            //     if (!phone_verification.is_verified) {
+            //         await LogModel.updateDetailLog(`Chưa xác thực số điện thoại.`, log_id);
+            //         return res.status(400).json({ message: "Số điện thoại của bạn chưa được xác thực, vui lòng quay lại trang đăng ký." })
+            //     }
+            // }
             
             account.password = hashPassword(account.password);
 
-            account.phone_number = phone_verification.phone_number;
+            // account.phone_number = phone_verification.phone_number;
 
             const new_user_id = await UserModel.createUser(account);
-            if (!req.log_id) {
-                await CartModel.createCart(new_user_id);
-            }
 
             await LogModel.updateStatusLog(log_id);
             await LogModel.updateDetailLog(`Tạo tài khoản thành công.`, log_id);
@@ -208,6 +206,66 @@ class UserController {
             await LogModel.updateStatusLog(log_id);
             await LogModel.updateDetailLog('Đổi mật khẩu thành công.', log_id);
             return res.status(200).json({ message: 'Đổi mật khẩu thành công.' });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Lỗi từ phía server.' });
+        }
+    }
+
+    static async changeAvatar(req, res) {
+        try {
+            const user_id = req.user_id;
+            const log_id = await LogModel.createLog('Đổi ảnh đại diện.', user_id);
+
+            const { avatar_url } = req.body;
+            
+            if (!avatar_url) {
+                await LogModel.updateDetailLog('Không có đường dẫn ảnh.', log_id);
+                return res.status(400).json({ message: 'Không có đường dẫn ảnh được gửi.' });
+            }
+
+            const user = await UserModel.getUserById(user_id);
+
+            const is_changed = await UserModel.updateUser({user_id: user_id, avatar_url: avatar_url});
+
+            if (!is_changed) {
+                await LogModel.updateDetailLog('Đổi ảnh đại diện không thành công.', log_id);
+                return res.status(400).json({ message: 'Đổi ảnh đại diện không thành công, vui lòng thử lại hoặc tải lại trang.' });
+            }
+
+            deleteFileFromCloudinary(user.avatar_url);
+            
+            await LogModel.updateStatusLog(log_id);
+            await LogModel.updateDetailLog('Đổi ảnh đại diện thành công.', log_id);
+            return res.status(200).json({ message: 'Đổi ảnh đại diện thành công.' });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Lỗi từ phía server.' });
+        }
+    }
+
+    static async updateUser(req, res) {
+        try {
+            const user_id = req.user_id;
+            const log_id = await LogModel.createLog('Đổi ảnh đại diện.', user_id);
+
+            const { fullname, email, date_of_birth } = req.body;
+            
+            if (!fullname || !email || !date_of_birth) {
+                await LogModel.updateDetailLog('Thiếu thông tin.', log_id);
+                return res.status(400).json({ message: 'Vui lòng điền đầy đủ thông tin yêu cầu.' });
+            }
+
+            const is_changed = await UserModel.updateUser({user_id: user_id, fullname: fullname, email: email, date_of_birth: date_of_birth});
+
+            if (!is_changed) {
+                await LogModel.updateDetailLog('Cập nhật thông tin không thành công.', log_id);
+                return res.status(400).json({ message: 'Cập nhật thông tin không thành công, vui lòng thử lại hoặc tải lại trang.' });
+            }
+
+            await LogModel.updateStatusLog(log_id);
+            await LogModel.updateDetailLog('Cập nhật thông tin thành công.', log_id);
+            return res.status(200).json({ message: 'Cập nhật thông tin thành công.' });
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Lỗi từ phía server.' });

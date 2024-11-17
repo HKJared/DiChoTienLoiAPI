@@ -15,6 +15,7 @@ const apiRouter = express.Router();
 
 
 apiRouter.post('/login', UserController.login);
+apiRouter.post('/register', UserController.createUser);
 
 apiRouter.get('/marketplace-categories', MarketplaceCategoryController.getCategories);
 apiRouter.get('/marketplace-items', MarketplaceItemController.getItems);

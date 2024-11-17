@@ -62,12 +62,82 @@ Response:
     }
 
 2. Info
-Path: /user/Info
+Path: /user/info
 Method: GET
 Header: 
     {
         Content-Type: "application/json"
         authentication: jwt
+    }
+Response:
+    {
+        id: int,
+        username: string,
+        fullname: string,
+        email: string (NULL),
+        phone_number: string (NULL),
+        last_activity: datetime,
+        gender: string,
+        date_of_birth: date,
+        avatar_url: string,
+        role_id: int, 
+        role_name: string,
+        created_at: datetime, 
+        updated_at: datetime (NULL)
+    }
+
+3. Change password
+Path: /user/change-password
+Method: PUT
+Header: 
+    {
+        Content-Type: "application/json"
+        authentication: jwt
+    }
+Body:
+    JSON.stringify({
+        old_password: string  (required),
+        new_password: string  (required)
+    })
+Response:
+    {
+        message: 'Đổi mật khẩu thành công.'
+    }
+
+4. Change avatar
+Path: /user/change-avatar
+Method: PUT
+Header:
+    {
+        Content-Type: "application/json"
+        authentication: jwt
+    }
+Body:
+    JSON.stringify({
+        avatar_url: string  (required)
+    })
+Response:
+    {
+        message: 'Đổi ảnh đại diện thành công.'
+    }
+
+5. Update info
+Path: /user/update-info
+Method: PUT
+Header:
+    {
+        Content-Type: "application/json"
+        authentication: jwt
+    }
+Body:
+    JSON.stringify({
+        fullname: string  (required),
+        gender: enum ('Nam', 'Nữ', 'Khác')  (required),
+        date_of_birth: date  (required)
+    })
+Response:
+    {
+        message: 'Cập nhật thông tin thành công.'
     }
 
 

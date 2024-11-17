@@ -12,6 +12,9 @@ const apiRouter = express.Router();
 
 apiRouter.get('/refresh-token', authenticate, UserController.refreshToken);
 apiRouter.get('/info', authenticate, UserController.getUserInfo);
+apiRouter.put('/change-password', authenticate, UserController.changePassword);
+apiRouter.put('/change-avatar', authenticate, UserController.changeAvatar);
+apiRouter.put('/update-info', authenticate, UserController.updateUser);
 
 
 apiRouter.get('/recipe-categories', authenticate, RecipeCategoryController.getCategories);
