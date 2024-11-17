@@ -7,6 +7,7 @@ const RecipeCategoryController = require('../../controllers/recipeCategoryContro
 
 const authenticate = require('../../middlewares/authentication');
 const authorize = require('../../middlewares/authorization');
+const RecipeController = require('../../controllers/recipeController');
 
 const apiRouter = express.Router();
 
@@ -18,7 +19,10 @@ apiRouter.put('/update-info', authenticate, UserController.updateUser);
 
 
 apiRouter.get('/recipe-categories', authenticate, RecipeCategoryController.getCategories);
-apiRouter.get('/recipes');
+apiRouter.get('/recipes', RecipeController.searchRecipes);
+apiRouter.post('/recipe', authenticate, RecipeController.createRecipe);
+apiRouter.put('/recipe', authenticate, RecipeController.updateRecipe);
+apiRouter.delete('/recipe', authenticate, RecipeController.deleteRecipe);
 
 // upload file
 apiRouter.post('/upload', authenticate, uploadFiles);

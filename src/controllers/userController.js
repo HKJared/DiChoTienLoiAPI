@@ -5,6 +5,8 @@ const UserModel = require("../models/userModel");
 const VerificationModel = require("../models/verificationModel");
 const { deleteFileFromCloudinary } = require('../utils/upload');
 
+const { validateUserData } = require("../validators/userValidator");
+
 function getLastChange(lastChange) {
     if (!lastChange) {
         return '-'

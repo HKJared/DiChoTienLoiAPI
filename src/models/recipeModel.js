@@ -6,6 +6,7 @@ class RecipeModel {
     static async createRecipe({
         category_id,
         name,
+        image_url,
         description,
         time,
         serving,
@@ -14,42 +15,75 @@ class RecipeModel {
         ingredients,
         instructions,
         created_by,
-        created_at,
-        updated_at
     }) {
         const queryString = `
-            INSERT INTO recipes (category_id, name, description, time, serving, cost_estimate, kcal, ingredients, instructions, total_views, total_saves, created_by, created_at, updated_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?, ?, ?)
+            INSERT INTO recipes (category_id, name, image_url, description, time, serving, cost_estimate, kcal, ingredients, instructions, created_by)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
 
         try {
             const [result] = await pool.execute(queryString, [
                 category_id,
                 name,
+                image_url,
                 description,
                 time,
                 serving,
                 cost_estimate,
                 kcal,
-                ingredients,
-                instructions,
-                created_by,
-                created_at,
-                updated_at
+                JSON.stringify(ingredients),
+                JSON.stringify(instructions),
+                created_by
             ]);
-            return result.insertId; // Trả về id của công thức vừa tạo
+
+            return result.insertId;
         } catch (error) {
             console.error('Error executing createRecipe() query:', error);
             throw error;
         }
     }
 
-    // Lấy thông tin công thức theo id
-    static async getRecipeById(recipeId) {
+    // Lấy thông tin công thức theo id từ admin
+    static async getRecipeByAdmin(recipeId) {
         const queryString = `
-            SELECT *
-            FROM recipes
-            WHERE id = ?
+            SELECT
+                r.*,
+                rc.name as category_name,
+                u.fullname as user_fullname
+            FROM
+                recipes r
+            JOIN
+                recipe_categories rc ON rc.id = r.category_id
+            JOIN
+                users u ON u.id = r.created_by
+            WHERE
+                r.id = ?
+        `;
+
+        try {
+            const [rows] = await pool.execute(queryString, [recipeId]);
+            return rows[0];
+        } catch (error) {
+            console.error('Error executing getRecipeById() query:', error);
+            throw error;
+        }
+    }
+
+    // Lấy thông tin công thức theo id từ user
+    static async getRecipeByUser(recipeId) {
+        const queryString = `
+            SELECT
+                r.id, r.name, r.category_id, r.image_url, r.description, r.time, r.serving, r.cost_estimate, r.kcal, r.ingredients, r.instructions, r.total_views, r.total_saves, r.created_by,
+                rc.name as category_name,
+                u.fullname as user_fullname
+            FROM
+                recipes r
+            JOIN
+                recipe_categories rc ON rc.id = r.category_id
+            JOIN
+                users u ON u.id = r.created_by
+            WHERE
+                r.id = ?
         `;
 
         try {
@@ -78,24 +112,21 @@ class RecipeModel {
     }
 
     // Cập nhật công thức
-    static async updateRecipe({
-        id,
+    static async updateRecipe(id, {
         category_id,
         name,
+        image_url,
         description,
         time,
         serving,
         cost_estimate,
         kcal,
         ingredients,
-        instructions,
-        approved_by,
-        approved_at,
-        updated_at
+        instructions
     }) {
         const queryString = `
             UPDATE recipes
-            SET category_id = ?, name = ?, description = ?, time = ?, serving = ?, cost_estimate = ?, kcal = ?, ingredients = ?, instructions = ?, approved_by = ?, approved_at = ?, updated_at = ?
+            SET category_id = ?, name = ?, image_url = ?, description = ?, time = ?, serving = ?, cost_estimate = ?, kcal = ?, ingredients = ?, instructions = ?, is_approved = 0, approved_at = NULL
             WHERE id = ?
         `;
 
@@ -103,16 +134,14 @@ class RecipeModel {
             const [result] = await pool.execute(queryString, [
                 category_id,
                 name,
+                image_url,
                 description,
                 time,
                 serving,
                 cost_estimate,
                 kcal,
-                ingredients,
-                instructions,
-                approved_by,
-                approved_at,
-                updated_at,
+                JSON.stringify(ingredients),
+                JSON.stringify(instructions),
                 id
             ]);
             return result.affectedRows > 0; // Trả về true nếu cập nhật thành công
@@ -189,7 +218,7 @@ class RecipeModel {
                 LOWER(r.kcal) LIKE LOWER('%${kw}%') OR
                 LOWER(r.ingredients) LIKE LOWER('%${kw}%') OR
                 LOWER(r.instructions) LIKE LOWER('%${kw}%') OR
-                LOWER(rc.name) LIKE LOWER('%${kw}%') OR
+                LOWER(rc.name) LIKE LOWER('%${kw}%')
 
             )`)
             .join(' OR ');
@@ -203,7 +232,7 @@ class RecipeModel {
         // Tạo chuỗi query SQL để lấy công thức nấu ăn
         const queryString = `
             SELECT
-                r.id, r.name, r.category_id, r.description, r.time, r.serving, r.cost_estimate, r.kcal, r.ingredients, r.instructions, r.total_views, r.created_by,
+                r.id, r.name, r.category_id, r.image_url, r.time, r.serving, r.total_views, r.total_saves, r.created_by,
                 rc.name as category_name,
                 u.fullname as user_fullname
             FROM
@@ -245,7 +274,6 @@ class RecipeModel {
                 ${ category_id ? 'AND r.category_id = ' + category_id : '' }
                 AND (${keywordCondition})
         `;
-    
         try {
             // Lấy danh sách công thức nấu ăn
             const [rows] = await pool.execute(queryString);
@@ -255,7 +283,7 @@ class RecipeModel {
             const totalCount = countResult[0].totalCount;
     
             return {
-                products: rows,
+                recipes: rows,
                 totalCount: totalCount // Nếu bạn cũng muốn trả về tổng số công thức nấu ăn
             };
         } catch (error) {

@@ -3,7 +3,7 @@
 1. Register
 Path: /register
 Method: POST
-Header: 
+Headers: 
     {
         Content-Type: "application/json"
     }
@@ -22,7 +22,7 @@ Response:
 2. Login
 Path: /login
 Method: POST
-Header: 
+Headers: 
     {
         Content-Type: "application/json"
     }
@@ -44,7 +44,7 @@ Response:
 1. Uploads
 Path: /user/upload
 Method: POST
-Header: 
+Headers: 
     {
         authentication: jwt
     }
@@ -64,7 +64,7 @@ Response:
 2. Info
 Path: /user/info
 Method: GET
-Header: 
+Headers: 
     {
         Content-Type: "application/json"
         authentication: jwt
@@ -89,7 +89,7 @@ Response:
 3. Change password
 Path: /user/change-password
 Method: PUT
-Header: 
+Headers: 
     {
         Content-Type: "application/json"
         authentication: jwt
@@ -107,7 +107,7 @@ Response:
 4. Change avatar
 Path: /user/change-avatar
 Method: PUT
-Header:
+Headers:
     {
         Content-Type: "application/json"
         authentication: jwt
@@ -124,7 +124,7 @@ Response:
 5. Update info
 Path: /user/update-info
 Method: PUT
-Header:
+Headers:
     {
         Content-Type: "application/json"
         authentication: jwt
@@ -146,7 +146,7 @@ I. MarketPlace Category
 1. GetData
 Path: /marketplace-categories
 Method: GET
-Header: 
+Headers: 
     {
         Content-Type: "application/json"
     }
@@ -165,7 +165,7 @@ II. MarketPlace Item
 1. GetData
 Path: /marketplace-items
 Method: GET
-Header: 
+Headers: 
     {
         Content-Type: "application/json"
     }
@@ -186,7 +186,7 @@ II. Recipe Category
 1. GetData
 Path: /recipe-categories
 Method: GET
-Header: 
+Headers: 
     {
         Content-Type: "application/json",
         authentication: jwt
@@ -203,21 +203,170 @@ Response:
     }
 
 II. Recipe   
-1. search
+1. Search
 Path: /recipes?keyword&page&itemsPerPage(&category_id NULL)
 Method: GET
-Header: 
+Headers: 
     {
-        Content-Type: "application/json",
-        authentication: jwt
+        Content-Type: "application/json"
     }
 Response:
     {
         recipes: [
             {
-                
+                id: int,
+                category_id: int,
+                name: string,
+                image_url: string,
+                time: int,
+                serving: int,
+                total_views: int,
+                total_saves: int,
+                created_by: int,
+                category_name: string,
+                user_fullname: string
             }
-        ]
+        ],
+        totalCount: int
+    }
+
+2. GET Detail Recipe
+Path: /recipe?recipe_id
+Method: GET
+Headers: 
+    {
+        Content-Type: "application/json"
+    }
+Response:
+    {
+        recipe: {
+            id: int,
+            name: string,
+            category_id: int,
+            image_url: string,
+            description: string,
+            time: int,
+            serving: int,
+            cost_estimate: int,
+            kcal: int,
+            ingredients: array [{marketplace_item_id, name, quantity}],
+            instructions: array [{ step, name, detail }],
+            total_views: int,
+            total_saves: int,
+            created_by: int,
+            category_name: string,
+            user_fullname: string
+        }
+    }
+
+3. Upload recipe
+PATH: /recipe
+Method: POST
+Headers: 
+    {
+        Content-Type: "application/json",
+        authentication: jwt
+    }
+Body:
+    {
+        recipe: {
+            category_id: int  (required),
+            name: string  (required),
+            image_url: string (required),
+            description: string (required),
+            time: int (required),
+            serving: int  (required),
+            cost_estimate: int  (required, > 10000),
+            kcal: int  (required),
+            ingredients: array [{marketplace_item_id, name, quantity}] (required),
+            instructions: array [{ step, name, detail }]  (required)
+        }
+    }
+Response:
+    {
+        message: "Đăng tải công thức nấu ăn thành công, chúng tôi sẽ thông báo cho bạn khi công thức nấu ăn được phê duyệt.",
+        new_recipe: {
+            id: int,
+            name: string,
+            category_id: int,
+            image_url: string,
+            description: string,
+            time: int,
+            serving: int,
+            cost_estimate: int,
+            kcal: int,
+            ingredients: array [{marketplace_item_id, name, quantity}],
+            instructions: array [{ step, name, detail }],
+            total_views: int,
+            total_saves: int,
+            created_by: int,
+            category_name: string,
+            user_fullname: string
+        }
+    }
+
+4. Update recipe
+PATH: /recipe
+Method: PUT
+Headers: 
+    {
+        Content-Type: "application/json",
+        authentication: jwt
+    }
+Body:
+    {
+        recipe_id: int  (required),
+        newData: {
+            category_id: int  (required),
+            name: string  (required),
+            image_url: string (NULL),
+            description: string (required),
+            time: int (required),
+            serving: int  (required),
+            cost_estimate: int  (required, > 10000),
+            kcal: int  (required),
+            ingredients: array [{marketplace_item_id, name, quantity}] (required),
+            instructions: array [{ step, name, detail }]  (required)
+        }
+    }
+Response:
+    {
+        message: "Cập nhật công thức nấu ăn thành công, chúng tôi sẽ thông báo cho bạn khi công thức nấu ăn được phê duyệt.",
+        recipe: {
+            id: int,
+            name: string,
+            category_id: int,
+            image_url: string,
+            description: string,
+            time: int,
+            serving: int,
+            cost_estimate: int,
+            kcal: int,
+            ingredients: array [{marketplace_item_id, name, quantity}],
+            instructions: array [{ step, name, detail }],
+            total_views: int,
+            total_saves: int,
+            created_by: int,
+            category_name: string,
+            user_fullname: string
+        }
+    }
+
+5. Delete recipe
+PATH: /recipe
+Method: DELETE
+Headers: 
+    {
+        Content-Type: "application/json",
+        authentication: jwt
+    }
+Body:
+    {
+        recipe_id: int  (required)
+    }
+Response:
+    {
+        message: "Xóa công thức nấu ăn thành công."
     }
 
 
@@ -232,7 +381,7 @@ adminstrator account: {
 1. Login
 Path: /admin/login
 Method: POST
-Header: 
+Headers: 
     {
         Content-Type: "application/json"
     }
@@ -253,7 +402,7 @@ Response:
 2. Refresh
 Path: /admin/refresh-token
 Method: GET
-Header: 
+Headers: 
     {
         Content-Type: "application/json",
         authentication: refresh_token

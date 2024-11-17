@@ -1,3 +1,9 @@
+// Thông điệp lỗi
+const ERROR_MESSAGES = {
+    INVALID_NAME: 'Tên không hợp lệ. Phải là một chuỗi không rỗng và tối đa 255 ký tự.',
+    INVALID_IMAGE_URL: 'URL hình ảnh không hợp lệ.',
+};
+
 // Kiểm tra name có tồn tại và độ dài tối đa là 255 ký tự
 function isValidName(name) {
     return typeof name === 'string' && name.trim().length > 0 && name.length <= 255;
@@ -5,28 +11,28 @@ function isValidName(name) {
 
 // Kiểm tra image_url có đúng định dạng URL
 function isValidImageUrl(imageUrl) {
-    const urlPattern = /^(https?:\/\/)?([\w\-]+\.)+[\w\-]{2,}([\/\w\-]*)*\/?$/;
-    return !imageUrl || (typeof imageUrl === 'string' && (imageUrl === '' || urlPattern.test(imageUrl)));
+    return typeof imageUrl === 'string';
 }
 
 // Hàm validate toàn bộ marketplace category
 function validateMarketplaceCategory(category) {
-    let errors = '';
+    const errors = [];
 
     if (!isValidName(category.name)) {
-        errors += 'Tên không hợp lệ. Phải là một chuỗi không rỗng và tối đa 255 ký tự. ';
+        errors.push(ERROR_MESSAGES.INVALID_NAME);
     }
     if (!isValidImageUrl(category.image_url)) {
-        errors += 'URL hình ảnh không hợp lệ. ';
+        errors.push(ERROR_MESSAGES.INVALID_IMAGE_URL);
     }
 
     return {
-        isValid: errors == '',
-        errors
+        isValid: errors.length === 0,
+        errors: errors.join(' '),
     };
 }
 
 module.exports = {
+    ERROR_MESSAGES,
     isValidName,
     isValidImageUrl,
     validateMarketplaceCategory,
