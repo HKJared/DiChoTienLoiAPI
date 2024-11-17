@@ -184,7 +184,7 @@ Response:
 
 II. Recipe Category    
 1. GetData
-Path: /recipe-categories
+Path: /user/recipe-categories
 Method: GET
 Headers: 
     {
@@ -231,11 +231,12 @@ Response:
     }
 
 2. GET Detail Recipe
-Path: /recipe?recipe_id
+Path: /user/recipe?recipe_id
 Method: GET
 Headers: 
     {
-        Content-Type: "application/json"
+        Content-Type: "application/json",
+        authentication: jwt
     }
 Response:
     {
@@ -260,7 +261,7 @@ Response:
     }
 
 3. Upload recipe
-PATH: /recipe
+PATH: /user/recipe
 Method: POST
 Headers: 
     {
@@ -306,7 +307,7 @@ Response:
     }
 
 4. Update recipe
-PATH: /recipe
+PATH: /user/recipe
 Method: PUT
 Headers: 
     {
@@ -353,7 +354,7 @@ Response:
     }
 
 5. Delete recipe
-PATH: /recipe
+PATH: /user/recipe
 Method: DELETE
 Headers: 
     {
