@@ -8,6 +8,7 @@ const LogController = require('../../controllers/logController');
 const UserController = require('../../controllers/userController');
 const MarketplaceCategoryController = require('../../controllers/marketplaceCategoryController');
 const RecipeCategoryController = require('../../controllers/recipeCategoryController');
+const RecipeModel = require('../../models/recipeModel');
 
 const apiRouter = express.Router();
 
@@ -28,5 +29,13 @@ apiRouter.post('/marketplace-category', (req, res, next) => {
 apiRouter.post('/recipe-category', (req, res, next) => {
     authorize(req, res, 'recipe-category-create', next);
 }, RecipeCategoryController.createCategory);
+
+apiRouter.put('/approve-recipe', (req, res, next) => {
+    authorize(req, res, 'recipe-approve', next);
+}, RecipeModel.approveRecipe);
+
+apiRouter.get('/old-logs', (req, res, next) => {
+    authorize(req, res, 'admin-creation', next);
+}, LogController.getOldLogs);
 
 module.exports = apiRouter;

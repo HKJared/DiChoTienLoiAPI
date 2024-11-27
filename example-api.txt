@@ -1,0 +1,55 @@
+const base_api_url = getBaseApiURL(); //localhost:8888/api
+
+async function APIWithToken(url, method, body) {
+    const jwt = getToken();
+
+    if (!jwt) {
+        showLoginMessage();
+        return
+    }
+
+    let configuration;
+    if (method == 'GET') {
+        configuration = {
+            method: method,
+            headers: {
+                "Content-Type": "application/json",
+                "authentication": token
+            }
+        }
+    } else {
+        configuration = {
+            method: method,
+            headers: {
+                "Content-Type": "application/json",
+                "authentication": token
+            },
+            body: JSON.stringify(body)
+        }
+    }
+
+    addProgressBar(40);
+    try {
+        const response = await fetch(base_api_url + url, configuration);
+
+        const result = await response.json();
+
+        if (!response.ok) {
+            showNotification(result.message);
+            throw new Error('Network response was not ok');
+        }
+        
+        return result; 
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+        return null;
+    } finally {
+        removeProgressBar();
+    }
+}
+
+const keyword = "xa";
+const page = 1;
+cosnt itemsPerPage = 20;
+
+const response = APIWithToken(`/recipes?keyword=${ keyword }&page=${  }`, 'GET')

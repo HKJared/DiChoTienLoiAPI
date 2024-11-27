@@ -88,13 +88,6 @@ class RecipeModel {
 
         try {
             const [rows] = await pool.execute(queryString, [recipeId]);
-
-            if (rows.length) {
-                rows[0].ingredients = JSON.parse(rows[0].ingredients);
-
-                rows[0].instructions = JSON.parse(rows[0].instructions);
-            }
-
             return rows[0];
         } catch (error) {
             console.error('Error executing getRecipeById() query:', error);

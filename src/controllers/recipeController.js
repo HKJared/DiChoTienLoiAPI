@@ -47,7 +47,7 @@ class RecipeController {
             return res.status(200).json({ message: "Đăng tải công thức nấu ăn thành công, chúng tôi sẽ thông báo cho bạn khi công thức nấu ăn được phê duyệt.", new_recipe: new_recipe });
         } catch (error) {
             console.log("Error executing createRecipe() query:", error);
-            return res.status(200).json({ message: "Có lỗi từ phía máy chủ." });
+            return res.status(500).json({ message: "Có lỗi từ phía máy chủ." });
         }
     }
 
@@ -58,7 +58,7 @@ class RecipeController {
             return res.status(200).json({ recipes: items });
         } catch (error) {
             console.log("Error executing getRecipes() query:", error);
-            return res.status(200).json({ message: "Có lỗi từ phía máy chủ." });
+            return res.status(500).json({ message: "Có lỗi từ phía máy chủ." });
         }
     }
 
@@ -88,7 +88,7 @@ class RecipeController {
             return res.status(200).json({ recipe: recipe });
         } catch (error) {
             console.log("Error executing getRecipeByUser() query:", error);
-            return res.status(200).json({ message: "Có lỗi từ phía máy chủ." });
+            return res.status(500).json({ message: "Có lỗi từ phía máy chủ." });
         }
     }
 
@@ -104,7 +104,7 @@ class RecipeController {
             return res.status(200).json({ recipes: recipes, totalCount: totalCount });
         } catch (error) {
             console.log("Error executing searchRecipes() query:", error);
-            return res.status(200).json({ message: "Có lỗi từ phía máy chủ." });
+            return res.status(500).json({ message: "Có lỗi từ phía máy chủ." });
         }
     }
 
@@ -170,7 +170,7 @@ class RecipeController {
             return res.status(200).json({ message: "Cập nhật công thức nấu ăn thành công, chúng tôi sẽ thông báo cho bạn khi công thức nấu ăn được phê duyệt.", new_recipe: new_recipe });
         } catch (error) {
             console.log("Error executing updateRecipe() query:", error);
-            return res.status(200).json({ message: "Có lỗi từ phía máy chủ." });
+            return res.status(500).json({ message: "Có lỗi từ phía máy chủ." });
         }
     }
 
@@ -211,7 +211,47 @@ class RecipeController {
             return res.status(200).json({ message: "Xóa công thức nấu ăn thành công." });
         } catch (error) {
             console.log("Error executing deleteRecipe() query:", error);
-            return res.status(200).json({ message: "Có lỗi từ phía máy chủ." });
+            return res.status(500).json({ message: "Có lỗi từ phía máy chủ." });
+        }
+    }
+
+    // Phê duyệt công thức nấu ăn
+    static async approveRecipe(req, res) {
+        try {
+            const user_id = req.user_id;
+            const log_id = req.log_id;
+
+            await LogModel.updateDetailLog('Phê duyệt công thức nấu ăn.');
+
+            const recipe_id =req.body.recipe_id;
+
+            if (!recipe_id) {
+                await LogModel.updateDetailLog("Không có id công thức nấu ăn được gửi.", log_id);
+
+                return res.status(400).json({ message: "Không có id công thức nấu ăn được gửi." });
+            }
+
+            const recipe = await RecipeModel.getRecipeByAdmin(recipe_id);
+
+            if (!recipe) {
+                await LogModel.updateDetailLog("Không tìm thấy công thức nấu ăn cần phê duyệt trong DB.", log_id);
+
+                return res.status(400).json({ message: "Không tìm thấy công thức nấu ăn cần phê duyệt." });
+            }
+
+            const is_approved = await RecipeModel.approveRecipe(recipe_id, user_id);
+
+            if(!is_approved) {
+                await LogModel.updateDetailLog("Cập nhật DB không thành công.", log_id);
+
+                return res.status(400).json({ message: "Phê duyệt không thành công, vui lòng thử lại hoặc tải lại trang." });
+            }
+
+            await LogModel.updateStatusLog(log_id);
+            return res.status(200).json({ message: "Phê duyệt thành công." });
+        } catch (error) {
+            console.log("Error executing approveRecipe() query:", error);
+            return res.status(500).json({ message: "Có lỗi từ phía máy chủ." });
         }
     }
 }

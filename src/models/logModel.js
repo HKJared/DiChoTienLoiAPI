@@ -44,7 +44,7 @@ class LogModel {
             FROM 
                 logs l
             JOIN
-                users u ON l.user_id = u.user_id
+                users u ON l.user_id = u.id
             WHERE
                 (LOWER(u.fullname) LIKE LOWER(?)
                 OR LOWER(u.username) LIKE LOWER(?))
@@ -75,7 +75,7 @@ class LogModel {
             FROM 
                 logs l
             JOIN
-                users u ON l.user_id = u.user_id
+                users u ON l.user_id = u.id
             WHERE
                 (LOWER(u.fullname) LIKE LOWER(?)
                 OR LOWER(u.username) LIKE LOWER(?))

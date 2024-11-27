@@ -202,7 +202,7 @@ Response:
         ]
     }
 
-II. Recipe   
+III. Recipe   
 1. Search
 Path: /recipes?keyword&page&itemsPerPage(&category_id NULL)
 Method: GET

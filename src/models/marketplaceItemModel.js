@@ -20,13 +20,18 @@ class MarketplaceItemModel {
     // Lấy thông tin mục theo id
     static async getItemById(itemId) {
         const queryString = `
-            SELECT id, category_id, name, image_url, created_by, created_at, updated_by, updated_at
+            SELECT id, category_id, name, image_url, list_units, created_by, created_at, updated_by, updated_at
             FROM marketplace_items
             WHERE id = ?
         `;
 
         try {
             const [rows] = await pool.execute(queryString, [itemId]);
+
+            if (rows.length) {
+                rows[0].list_units = JSON.parse(rows[0].list_units)
+            }
+
             return rows[0];
         } catch (error) {
             console.error('Error executing getItemById() query:', error);
@@ -43,7 +48,13 @@ class MarketplaceItemModel {
 
         try {
             const [rows] = await pool.execute(queryString);
-            return rows;
+
+            const processedRows = rows.map(row => ({
+                ...row,
+                list_units: JSON.parse(row.list_units || '[]') // Nếu null thì trả về mảng rỗng
+            }));
+    
+            return processedRows;
         } catch (error) {
             console.error('Error executing getAllItems() query:', error);
             throw error;

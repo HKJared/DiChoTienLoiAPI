@@ -9,7 +9,7 @@ async function uploadFiles(req, res) {
             return res.status(500).json({ message: 'Error processing files.' });
         }
     
-        const files = req.files;
+        const files = req.body.files;
         const keys = req.body.keys; 
         
         let keyArray = Array.isArray(keys) ? keys : [keys];
