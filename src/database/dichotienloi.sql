@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 12, 2024 lúc 03:44 PM
+-- Thời gian đã tạo: Th10 27, 2024 lúc 03:35 PM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -33,6 +33,63 @@ CREATE TABLE `email_verifications` (
   `token` varchar(255) NOT NULL,
   `user_id` int(11) NOT NULL,
   `expires_at` datetime DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `family_groups`
+--
+
+CREATE TABLE `family_groups` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `group_leader` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `family_members`
+--
+
+CREATE TABLE `family_members` (
+  `family_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `family_recipes`
+--
+
+CREATE TABLE `family_recipes` (
+  `id` int(11) NOT NULL,
+  `family_id` int(11) NOT NULL,
+  `shared_by` int(11) NOT NULL,
+  `detail` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`detail`)),
+  `is_approved` tinyint(1) NOT NULL DEFAULT 0,
+  `approved_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `family_shopping_calendars`
+--
+
+CREATE TABLE `family_shopping_calendars` (
+  `id` int(11) NOT NULL,
+  `family_id` int(11) NOT NULL,
+  `shared_by` int(11) NOT NULL,
+  `detail` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`detail`)),
+  `is_approved` tinyint(1) NOT NULL DEFAULT 0,
+  `approved_at` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp(),
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -1136,7 +1193,55 @@ INSERT INTO `logs` (`id`, `user_id`, `action`, `status`, `detail`, `created_at`)
 (1076, 2, 'recipe-category-create', 0, '[2024:11:12 20:49:35]: Mã xác thực hết hạn', '2024-11-12 13:49:35'),
 (1077, 1, 'recipe-category-create', 1, '', '2024-11-12 13:50:02'),
 (1078, 1, 'recipe-category-create', 1, '', '2024-11-12 13:50:25'),
-(1079, 2, 'Đăng nhập', 1, '[2024:11:12 20:56:23]: Đăng nhập thành công.', '2024-11-12 13:56:23');
+(1079, 2, 'Đăng nhập', 1, '[2024:11:12 20:56:23]: Đăng nhập thành công.', '2024-11-12 13:56:23'),
+(1080, 2, 'Đăng nhập', 1, '[2024:11:14 23:28:43]: Đăng nhập thành công.', '2024-11-14 16:28:43'),
+(1081, 2, 'Đăng ký tài khoản', 0, '[2024:11:17 08:51:57]: Tài khoản Quyen1506 đã tồn tại.', '2024-11-17 01:51:57'),
+(1082, 2, 'Đăng ký tài khoản', 0, '', '2024-11-17 01:52:18'),
+(1083, 2, 'Đăng nhập', 1, '[2024:11:17 13:19:18]: Đăng nhập thành công.', '2024-11-17 06:19:18'),
+(1084, 2, 'Đăng tải công thức nấu ăn', 0, '', '2024-11-17 06:35:02'),
+(1085, 2, 'Đăng tải công thức nấu ăn', 0, '', '2024-11-17 06:37:28'),
+(1086, 2, 'Đăng tải công thức nấu ăn', 0, '', '2024-11-17 06:39:15'),
+(1087, 2, 'Đăng tải công thức nấu ăn', 0, '', '2024-11-17 06:39:42'),
+(1088, 2, 'Đăng tải công thức nấu ăn', 0, '', '2024-11-17 06:40:15'),
+(1089, 2, 'Đăng tải công thức nấu ăn', 0, '[2024:11:17 13:49:13]: Tên món ăn không hợp lệ. Phải là một chuỗi không rỗng và tối đa 255 ký tự. URL hình ảnh không hợp lệ. Mô tả không hợp lệ. Phải là một chuỗi tối đa 1000 ký tự. Thời gian không hợp lệ. Phải là số nguyên dương. Số lượng khẩu phần không hợp lệ. Phải là số nguyên lớn hơn hoặc bằng 1. Chi phí dự kiến không hợp lệ. Phải là số lớn hơn hoặc bằng 10,000. Số kcal không hợp lệ. Phải là số nguyên dương. Nguyên liệu không hợp lệ. Phải là một mảng chứa ít nhất một phần tử. Hướng dẫn không hợp lệ. Phải là một mảng chứa ít nhất một phần tử.', '2024-11-17 06:49:13'),
+(1090, 2, 'Đăng tải công thức nấu ăn', 0, '[2024:11:17 13:52:33]: URL hình ảnh không hợp lệ. Số lượng khẩu phần không hợp lệ. Phải là số nguyên lớn hơn hoặc bằng 1. Nguyên liệu không hợp lệ. Phải là một mảng chứa ít nhất một phần tử.', '2024-11-17 06:52:33'),
+(1091, 2, 'Đăng tải công thức nấu ăn', 0, '[2024:11:17 13:53:40]: URL hình ảnh không hợp lệ. Nguyên liệu không hợp lệ. Phải là một mảng chứa ít nhất một phần tử.', '2024-11-17 06:53:40'),
+(1092, 2, 'Đăng tải công thức nấu ăn', 0, '[2024:11:17 13:54:07]: URL hình ảnh không hợp lệ. Nguyên liệu không hợp lệ. Phải là một mảng chứa ít nhất một phần tử.', '2024-11-17 06:54:07'),
+(1093, 2, 'Đăng tải công thức nấu ăn', 0, '[2024:11:17 13:54:19]: URL hình ảnh không hợp lệ. Nguyên liệu không hợp lệ. Phải là một mảng chứa ít nhất một phần tử.', '2024-11-17 06:54:19'),
+(1094, 2, 'Đăng tải công thức nấu ăn', 0, '[2024:11:17 13:55:11]: URL hình ảnh không hợp lệ. Nguyên liệu không hợp lệ. Phải là một mảng chứa ít nhất một phần tử.', '2024-11-17 06:55:11'),
+(1095, 2, 'Đăng tải công thức nấu ăn', 0, '[2024:11:17 13:56:11]: URL hình ảnh không hợp lệ.', '2024-11-17 06:56:11'),
+(1096, 2, 'Đăng tải công thức nấu ăn', 0, '', '2024-11-17 06:56:54'),
+(1097, 2, 'Đăng tải công thức nấu ăn', 0, '', '2024-11-17 07:01:18'),
+(1098, 2, 'Đăng tải công thức nấu ăn', 0, '', '2024-11-17 07:01:55'),
+(1099, 2, 'Đăng tải công thức nấu ăn', 0, '', '2024-11-17 07:02:18'),
+(1100, 2, 'Đăng tải công thức nấu ăn', 0, '', '2024-11-17 07:04:32'),
+(1101, 2, 'Đăng tải công thức nấu ăn', 1, '[2024:11:17 14:05:13]: Đăng tải công thức nấu ăn thành công.', '2024-11-17 07:05:13'),
+(1102, 2, 'Đăng tải công thức nấu ăn', 0, '', '2024-11-17 07:07:19'),
+(1103, 2, 'Đăng tải công thức nấu ăn', 0, '', '2024-11-17 07:10:31'),
+(1104, 2, 'Đăng tải công thức nấu ăn', 0, '', '2024-11-17 07:11:04'),
+(1105, 2, 'Đăng tải công thức nấu ăn', 0, '', '2024-11-17 07:12:13'),
+(1106, 2, 'Đăng tải công thức nấu ăn', 1, '[2024:11:17 14:13:34]: Đăng tải công thức nấu ăn thành công.', '2024-11-17 07:13:34'),
+(1107, 2, 'Đăng tải công thức nấu ăn', 0, '', '2024-11-17 08:27:16'),
+(1108, 2, 'Đăng tải công thức nấu ăn', 1, '[2024:11:17 15:28:15]: Cập nhật công thức nấu ăn thành công.', '2024-11-17 08:28:15'),
+(1109, 2, 'Đăng tải công thức nấu ăn', 1, '[2024:11:17 15:28:40]: Cập nhật công thức nấu ăn thành công.', '2024-11-17 08:28:40'),
+(1110, 2, 'Đăng tải công thức nấu ăn', 0, '[2024:11:17 15:37:25]: Không có id công thức nấu ăn.', '2024-11-17 08:37:25'),
+(1111, 2, 'Đăng tải công thức nấu ăn', 1, '[2024:11:17 15:37:31]: Cập nhật công thức nấu ăn thành công.', '2024-11-17 08:37:31'),
+(1112, 2, 'Đăng nhập', 1, '[2024:11:17 19:15:05]: Đăng nhập thành công.', '2024-11-17 12:15:05'),
+(1113, 2, 'Đăng ký tài khoản', 0, '[2024:11:17 19:15:56]: Tài khoản Quyen1506 đã tồn tại.', '2024-11-17 12:15:56'),
+(1114, 2, 'Đăng ký tài khoản', 1, '[2024:11:17 19:17:18]: Tạo tài khoản thành công.', '2024-11-17 12:17:18'),
+(1115, 9, 'Đăng nhập', 1, '[2024:11:17 19:20:37]: Đăng nhập thành công.', '2024-11-17 12:20:37'),
+(1116, 9, 'Đăng nhập', 0, '[2024:11:17 19:27:18]: Mật khẩu không chính xác.', '2024-11-17 12:27:18'),
+(1117, 9, 'Đăng nhập', 1, '[2024:11:17 19:27:51]: Đăng nhập thành công.', '2024-11-17 12:27:51'),
+(1118, 9, 'Đăng tải công thức nấu ăn.', 1, '[2024:11:17 19:52:26]: Đăng tải công thức nấu ăn thành công.', '2024-11-17 12:52:26'),
+(1119, 9, 'Đăng tải công thức nấu ăn.', 0, '[2024:11:17 19:52:58]: Tên món ăn không hợp lệ. Phải là một chuỗi không rỗng và tối đa 255 ký tự.', '2024-11-17 12:52:58'),
+(1120, 9, 'Đăng tải công thức nấu ăn.', 0, '[2024:11:17 19:53:25]: Mô tả không hợp lệ. Phải là một chuỗi tối đa 1000 ký tự.', '2024-11-17 12:53:25'),
+(1121, 9, 'Đăng tải công thức nấu ăn.', 1, '[2024:11:17 20:00:38]: Đăng tải công thức nấu ăn thành công.', '2024-11-17 13:00:38'),
+(1122, 2, 'admin-creation', 0, '[2024:11:18 15:06:50]: Không xác định được đối tượng thực hiện', '2024-11-18 08:06:50'),
+(1123, 1, 'Đăng nhập với tư cách quản trị viên', 1, '[2024:11:18 15:10:30]: Đăng nhập thành công.', '2024-11-18 08:10:30'),
+(1124, 2, 'Đăng ký tài khoản', 0, '[2024:11:18 15:12:07]: Tài khoản dichotienloi@admin đã tồn tại.', '2024-11-18 08:12:07'),
+(1125, 2, 'Đăng ký tài khoản', 1, '[2024:11:18 15:12:22]: Tạo tài khoản thành công.', '2024-11-18 08:12:22'),
+(1126, 1, 'Đăng nhập với tư cách quản trị viên', 1, '[2024:11:18 15:25:41]: Đăng nhập thành công.', '2024-11-18 08:25:41'),
+(1127, 9, 'Đăng nhập', 1, '[2024:11:27 21:20:20]: Đăng nhập thành công.', '2024-11-27 14:20:20');
 
 -- --------------------------------------------------------
 
@@ -1645,7 +1750,8 @@ INSERT INTO `permissions` (`id`, `name`) VALUES
 (11, 'marketplace-item-delete'),
 (12, 'recipe-category-create'),
 (13, 'recipe-category-edit'),
-(14, 'recipe-category-delete');
+(14, 'recipe-category-delete'),
+(15, 'recipe-approve');
 
 -- --------------------------------------------------------
 
@@ -1681,8 +1787,8 @@ CREATE TABLE `recipes` (
   `kcal` int(11) NOT NULL,
   `ingredients` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`ingredients`)),
   `instructions` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`instructions`)),
-  `total_views` int(11) NOT NULL,
-  `total_saves` int(11) NOT NULL,
+  `total_views` int(11) NOT NULL DEFAULT 0,
+  `total_saves` int(11) NOT NULL DEFAULT 0,
   `is_approved` tinyint(1) NOT NULL DEFAULT 0,
   `approved_by` int(11) DEFAULT NULL,
   `approved_at` timestamp NULL DEFAULT NULL,
@@ -1690,6 +1796,14 @@ CREATE TABLE `recipes` (
   `created_at` int(11) NOT NULL,
   `updated_at` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `recipes`
+--
+
+INSERT INTO `recipes` (`id`, `category_id`, `name`, `image_url`, `description`, `time`, `serving`, `cost_estimate`, `kcal`, `ingredients`, `instructions`, `total_views`, `total_saves`, `is_approved`, `approved_by`, `approved_at`, `created_by`, `created_at`, `updated_at`) VALUES
+(4, 1, 'Thịt Ba Chỉ Xào Mướp', 'https://img-global.cpcdn.com/recipes/f4bacf6edc2c725f/680x482cq70/ba-ch%E1%BB%89-xao-m%C6%B0%E1%BB%9Bp-h%C6%B0%C6%A1ng-recipe-main-photo.jpg', 'Món thịt ba chỉ xào mướp thơm ngon, dễ làm, thích hợp cho bữa cơm gia đình.', 30, 4, 50000, 350, '[{\"marketplace_item_id\":101,\"name\":\"Thịt Ba Chỉ\",\"quantity\":\"300g\"},{\"marketplace_item_id\":104,\"name\":\"Mướp\",\"quantity\":\"1 quả\"},{\"marketplace_item_id\":107,\"name\":\"Hành Tỏi\",\"quantity\":\"50g\"},{\"marketplace_item_id\":110,\"name\":\"Nước Mắm\",\"quantity\":\"20ml\"}]', '[{\"step\":1,\"name\":\"Chuẩn bị nguyên liệu\",\"detail\":\"Thịt ba chỉ rửa sạch, thái lát mỏng. Mướp gọt vỏ, cắt khúc vừa ăn. Hành tỏi băm nhuyễn.\"},{\"step\":2,\"name\":\"Xào thịt\",\"detail\":\"Cho thịt ba chỉ vào chảo, xào đến khi thịt hơi vàng, sau đó cho hành tỏi vào xào cùng.\"},{\"step\":3,\"name\":\"Xào mướp\",\"detail\":\"Thêm mướp vào chảo, đảo đều. Nêm nước mắm, tiêu cho vừa ăn.\"},{\"step\":4,\"name\":\"Hoàn thành\",\"detail\":\"Xào đến khi mướp chín mềm, thịt thấm gia vị, tắt bếp và thưởng thức.\"}]', 0, 0, 1, NULL, NULL, 9, 0, 0),
+(5, 1, 'Thịt Ba Chỉ Xào Mướp', 'https://img-global.cpcdn.com/recipes/f4bacf6edc2c725f/680x482cq70/ba-ch%E1%BB%89-xao-m%C6%B0%E1%BB%9Bp-h%C6%B0%C6%A1ng-recipe-main-photo.jpg', 'Món thịt ba chỉ xào mướp thơm ngon, dễ làm, thích hợp cho bữa cơm gia đình.', 30, 4, 50000, 350, '[{\"marketplace_item_id\":101,\"name\":\"Thịt Ba Chỉ\",\"quantity\":\"300g\"},{\"marketplace_item_id\":104,\"name\":\"Mướp\",\"quantity\":\"1 quả\"},{\"marketplace_item_id\":107,\"name\":\"Hành Tỏi\",\"quantity\":\"50g\"},{\"marketplace_item_id\":110,\"name\":\"Nước Mắm\",\"quantity\":\"20ml\"}]', '[{\"step\":1,\"name\":\"Chuẩn bị nguyên liệu\",\"detail\":\"Thịt ba chỉ rửa sạch, thái lát mỏng. Mướp gọt vỏ, cắt khúc vừa ăn. Hành tỏi băm nhuyễn.\"},{\"step\":2,\"name\":\"Xào thịt\",\"detail\":\"Cho thịt ba chỉ vào chảo, xào đến khi thịt hơi vàng, sau đó cho hành tỏi vào xào cùng.\"},{\"step\":3,\"name\":\"Xào mướp\",\"detail\":\"Thêm mướp vào chảo, đảo đều. Nêm nước mắm, tiêu cho vừa ăn.\"},{\"step\":4,\"name\":\"Hoàn thành\",\"detail\":\"Xào đến khi mướp chín mềm, thịt thấm gia vị, tắt bếp và thưởng thức.\"}]', 0, 0, 1, NULL, NULL, 9, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -1742,7 +1856,9 @@ CREATE TABLE `roles` (
 INSERT INTO `roles` (`id`, `name`) VALUES
 (1, 'Adminstrator'),
 (2, 'Người dùng'),
-(3, 'Quản trị viên bài tập hệ thống');
+(3, 'Quản trị viên mặt hàng mua sắm'),
+(4, 'Quản trị viên công thức nấu ăn'),
+(5, 'Quản trị viên người dùng');
 
 -- --------------------------------------------------------
 
@@ -1774,9 +1890,15 @@ INSERT INTO `role_permissions` (`role_id`, `permission_id`) VALUES
 (1, 12),
 (1, 13),
 (1, 14),
+(1, 15),
 (3, 9),
 (3, 10),
-(3, 11);
+(3, 11),
+(4, 12),
+(4, 13),
+(4, 14),
+(4, 15),
+(5, 5);
 
 -- --------------------------------------------------------
 
@@ -1794,7 +1916,7 @@ CREATE TABLE `users` (
   `email` varchar(255) DEFAULT NULL,
   `phone_number` varchar(12) DEFAULT NULL,
   `gender` enum('Nam','Nữ','Khác','') NOT NULL,
-  `date_of_birth` datetime DEFAULT NULL,
+  `date_of_birth` date DEFAULT NULL,
   `avatar_url` text NOT NULL,
   `role_id` int(11) NOT NULL DEFAULT 2,
   `last_activity` datetime NOT NULL,
@@ -1808,9 +1930,11 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `username`, `password`, `provider`, `provider_id`, `fullname`, `email`, `phone_number`, `gender`, `date_of_birth`, `avatar_url`, `role_id`, `last_activity`, `created_at`, `updated_at`) VALUES
 (1, 'dichotienloi@admin', 'f1e5ec16ef0e22a8f05c16d16a124139d49c79903b1e8edabff2d67f374db1d2', NULL, NULL, 'Adminstrator', NULL, NULL, 'Khác', NULL, '', 1, '2024-11-12 20:49:49', '2024-10-26 09:11:00', '2024-11-12 13:49:49'),
-(2, 'Quyen1506', '6e6d16908ed1c04a52ec391771202906412326d8c2de232fae486c26c51816c6', NULL, NULL, 'Vũ Tiến Quyền', NULL, NULL, 'Nam', NULL, '', 2, '2024-11-12 20:56:23', '2024-10-26 09:11:00', '2024-11-12 13:56:23'),
+(2, 'Quyen1506', '6e6d16908ed1c04a52ec391771202906412326d8c2de232fae486c26c51816c6', NULL, NULL, 'Vũ Tiến Quyền', NULL, NULL, 'Nam', NULL, '', 2, '2024-11-17 19:15:05', '2024-10-26 09:11:00', '2024-11-17 12:15:05'),
 (6, 'HKJared', NULL, 'github', '3a4bff9505f4b25f14a28adf2acc81c72bd77bb0d7313294a2cf0e3c997e4aa4', 'Vu Tien Quyen', NULL, NULL, 'Nam', NULL, 'https://avatars.githubusercontent.com/u/124007412?v=4', 2, '2024-11-09 12:13:22', '2024-10-29 15:08:09', '2024-11-09 05:13:22'),
-(7, 'vuq147', NULL, 'google', '20452a9b63dfb7886f35065fc1191d21afb90979b004ef40a77836c52a58bae1', 'Quyền Vũ', 'vuq147@gmail.com', NULL, 'Nam', NULL, 'https://lh3.googleusercontent.com/a/ACg8ocIooj9ouLMGdVyTPE39qLKrsghDs-0jCVeBZWPoXRfYlmSiOAUY=s96-c', 2, '2024-11-09 10:03:08', '2024-10-30 04:22:51', '2024-11-09 03:03:08');
+(7, 'vuq147', NULL, 'google', '20452a9b63dfb7886f35065fc1191d21afb90979b004ef40a77836c52a58bae1', 'Quyền Vũ', 'vuq147@gmail.com', NULL, 'Nam', NULL, 'https://lh3.googleusercontent.com/a/ACg8ocIooj9ouLMGdVyTPE39qLKrsghDs-0jCVeBZWPoXRfYlmSiOAUY=s96-c', 2, '2024-11-09 10:03:08', '2024-10-30 04:22:51', '2024-11-09 03:03:08'),
+(8, '123456', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', NULL, NULL, 'User_d6392167-57b1-46ca-ad13-7b65f808e7b5', NULL, NULL, 'Nam', NULL, '', 2, '0000-00-00 00:00:00', '2024-11-17 01:52:18', NULL),
+(9, 'Ky123456', '6e6d16908ed1c04a52ec391771202906412326d8c2de232fae486c26c51816c6', NULL, NULL, 'User_143e0350-424f-453a-a304-c95181f7670c', NULL, NULL, 'Nam', NULL, '', 2, '2024-11-27 21:20:20', '2024-11-17 12:17:18', '2024-11-27 14:20:20');
 
 -- --------------------------------------------------------
 
@@ -1841,6 +1965,36 @@ CREATE TABLE `user_disables` (
 ALTER TABLE `email_verifications`
   ADD PRIMARY KEY (`id`),
   ADD KEY `email_verifications_fk1` (`user_id`);
+
+--
+-- Chỉ mục cho bảng `family_groups`
+--
+ALTER TABLE `family_groups`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `family_group_fk1` (`group_leader`);
+
+--
+-- Chỉ mục cho bảng `family_members`
+--
+ALTER TABLE `family_members`
+  ADD PRIMARY KEY (`family_id`,`user_id`),
+  ADD KEY `family_member_fk2` (`user_id`);
+
+--
+-- Chỉ mục cho bảng `family_recipes`
+--
+ALTER TABLE `family_recipes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `family_recipe_fk1` (`family_id`),
+  ADD KEY `family_recipe_fk2` (`shared_by`);
+
+--
+-- Chỉ mục cho bảng `family_shopping_calendars`
+--
+ALTER TABLE `family_shopping_calendars`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `family_shopping_calendar_fk1` (`family_id`),
+  ADD KEY `family_shopping_calendar_fk2` (`shared_by`);
 
 --
 -- Chỉ mục cho bảng `logs`
@@ -1936,10 +2090,28 @@ ALTER TABLE `user_disables`
 --
 
 --
+-- AUTO_INCREMENT cho bảng `family_groups`
+--
+ALTER TABLE `family_groups`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `family_recipes`
+--
+ALTER TABLE `family_recipes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `family_shopping_calendars`
+--
+ALTER TABLE `family_shopping_calendars`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT cho bảng `logs`
 --
 ALTER TABLE `logs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1080;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1128;
 
 --
 -- AUTO_INCREMENT cho bảng `marketplace_categories`
@@ -1957,13 +2129,13 @@ ALTER TABLE `marketplace_items`
 -- AUTO_INCREMENT cho bảng `permissions`
 --
 ALTER TABLE `permissions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT cho bảng `recipes`
 --
 ALTER TABLE `recipes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `recipe_categories`
@@ -1975,13 +2147,13 @@ ALTER TABLE `recipe_categories`
 -- AUTO_INCREMENT cho bảng `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
@@ -1992,6 +2164,33 @@ ALTER TABLE `users`
 --
 ALTER TABLE `email_verifications`
   ADD CONSTRAINT `email_verifications_fk1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `family_groups`
+--
+ALTER TABLE `family_groups`
+  ADD CONSTRAINT `family_group_fk1` FOREIGN KEY (`group_leader`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `family_members`
+--
+ALTER TABLE `family_members`
+  ADD CONSTRAINT `family_member_fk1` FOREIGN KEY (`family_id`) REFERENCES `family_groups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `family_member_fk2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `family_recipes`
+--
+ALTER TABLE `family_recipes`
+  ADD CONSTRAINT `family_recipe_fk1` FOREIGN KEY (`family_id`) REFERENCES `family_groups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `family_recipe_fk2` FOREIGN KEY (`shared_by`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `family_shopping_calendars`
+--
+ALTER TABLE `family_shopping_calendars`
+  ADD CONSTRAINT `family_shopping_calendar_fk1` FOREIGN KEY (`family_id`) REFERENCES `family_groups` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `family_shopping_calendar_fk2` FOREIGN KEY (`shared_by`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Các ràng buộc cho bảng `logs`
