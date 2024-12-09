@@ -20,7 +20,7 @@ apiRouter.put('/update-info', authenticate, UserController.updateUser);
 
 apiRouter.get('/recipe-categories', authenticate, RecipeCategoryController.getCategories);
 apiRouter.get('/recipes', RecipeController.searchRecipes);
-apiRouter.get('/recipe', authenticate, RecipeController.searchRecipes);
+apiRouter.get('/recipe', authenticate, RecipeController.getRecipeByUser);
 apiRouter.post('/recipe', authenticate, RecipeController.createRecipe);
 apiRouter.put('/recipe', authenticate, RecipeController.updateRecipe);
 apiRouter.delete('/recipe', authenticate, RecipeController.deleteRecipe);
