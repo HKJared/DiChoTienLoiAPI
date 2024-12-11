@@ -26,6 +26,6 @@ apiRouter.put('/recipe', authenticate, RecipeController.updateRecipe);
 apiRouter.delete('/recipe', authenticate, RecipeController.deleteRecipe);
 
 // upload file
-// apiRouter.post('/upload', authenticate, uploadFiles);
+apiRouter.post('/upload', authenticate, uploadFiles);
 
 module.exports = apiRouter;
