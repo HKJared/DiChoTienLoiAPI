@@ -1,3 +1,5 @@
+BASE_URL = http://localhost:port/api
+
 -------------------AUTHENTICATION-------------------
 
 1. Register
@@ -182,7 +184,7 @@ Response:
         ]
     }
 
-II. Recipe Category    
+III. Recipe Category    
 1. GetData
 Path: /user/recipe-categories
 Method: GET
@@ -202,7 +204,7 @@ Response:
         ]
     }
 
-III. Recipe   
+IV. Recipe   
 1. Search
 Path: /recipes?keyword&page&itemsPerPage(&category_id NULL)
 Method: GET
@@ -371,6 +373,22 @@ Response:
     }
 
 
+V. Uploads
+PATH: /user/upload
+Method: POST
+Headers: 
+    {
+        authentication: jwt
+    }
+Body:
+    {
+        formData  (required)
+    }
+Response:
+    {
+        message: "Xóa công thức nấu ăn thành công."
+    }
+p/s: formData chứa 2 mảng files (chứa các file) và keys (chứa các key tương ứng)
 
 -------------------ADMIN-------------------
 I. Authentication, Authorization
