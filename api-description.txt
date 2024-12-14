@@ -390,6 +390,25 @@ Response:
     }
 p/s: formData chứa 2 mảng files (chứa các file) và keys (chứa các key tương ứng)
 
+PATH: /user/recipe
+Method: DELETE
+Headers: 
+    {
+        Content-Type: "application/json",
+        authentication: jwt
+    }
+Body:
+    {
+        recipe_id: int  (required)
+    }
+Response:
+    {
+        message: "Xóa công thức nấu ăn thành công."
+    }
+
+VI. Family group
+
+
 -------------------ADMIN-------------------
 I. Authentication, Authorization
 adminstrator account: {

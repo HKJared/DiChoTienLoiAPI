@@ -228,14 +228,12 @@ class UserController {
 
             const user = await UserModel.getUserById(user_id);
 
-            const is_changed = await UserModel.updateUser({user_id: user_id, avatar_url: avatar_url});
+            const is_changed = await UserModel.updateUser({id: user_id, avatar_url: avatar_url});
 
             if (!is_changed) {
                 await LogModel.updateDetailLog('Đổi ảnh đại diện không thành công.', log_id);
                 return res.status(400).json({ message: 'Đổi ảnh đại diện không thành công, vui lòng thử lại hoặc tải lại trang.' });
             }
-
-            deleteFileFromCloudinary(user.avatar_url);
             
             await LogModel.updateStatusLog(log_id);
             await LogModel.updateDetailLog('Đổi ảnh đại diện thành công.', log_id);
