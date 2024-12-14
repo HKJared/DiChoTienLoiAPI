@@ -196,7 +196,7 @@ class UserController {
                 return res.status(400).json({ message: `Mật khẩu này đã được sử dụng và thay đổi vào ${ getLastChange(password_is_exist.changed_at) }.` });
             }
 
-            const is_changed = await UserModel.updateUser({user_id: user_id, password: hashPassword(new_password)});
+            const is_changed = await UserModel.updateUser({id: user_id, password: hashPassword(new_password)});
 
             if (!is_changed) {
                 await LogModel.updateDetailLog('Đổi mật khẩu không thành công.', log_id);
@@ -256,7 +256,7 @@ class UserController {
                 return res.status(400).json({ message: 'Vui lòng điền đầy đủ thông tin yêu cầu.' });
             }
 
-            const is_changed = await UserModel.updateUser({user_id: user_id, fullname: fullname, email: email, date_of_birth: date_of_birth});
+            const is_changed = await UserModel.updateUser({id: user_id, fullname: fullname, email: email, date_of_birth: date_of_birth});
 
             if (!is_changed) {
                 await LogModel.updateDetailLog('Cập nhật thông tin không thành công.', log_id);
