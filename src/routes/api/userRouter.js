@@ -8,6 +8,7 @@ const RecipeCategoryController = require('../../controllers/recipeCategoryContro
 const authenticate = require('../../middlewares/authentication');
 const authorize = require('../../middlewares/authorization');
 const RecipeController = require('../../controllers/recipeController');
+const FamilyController = require('../../controllers/familyController');
 
 const apiRouter = express.Router();
 
@@ -24,6 +25,15 @@ apiRouter.get('/recipe', authenticate, RecipeController.getRecipeByUser);
 apiRouter.post('/recipe', authenticate, RecipeController.createRecipe);
 apiRouter.put('/recipe', authenticate, RecipeController.updateRecipe);
 apiRouter.delete('/recipe', authenticate, RecipeController.deleteRecipe);
+
+
+apiRouter.post('/family-group', authenticate, FamilyController.createFamily);
+apiRouter.get('/family-groups', authenticate, FamilyController.getFamiliesByUserId);
+apiRouter.get('/family-group', authenticate, FamilyController.getFamilyGroup);
+apiRouter.post('/family-members', authenticate, FamilyController.addFamilyMembers);
+apiRouter.put('/family-group', authenticate, FamilyController.updateFamily);
+apiRouter.delete('/family-member', authenticate, FamilyController.deleteFamilyMember);
+apiRouter.delete('/family-group', authenticate, FamilyController.deleteFamily);
 
 // upload file
 apiRouter.post('/upload', authenticate, uploadFiles);

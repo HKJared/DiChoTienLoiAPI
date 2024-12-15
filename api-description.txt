@@ -77,7 +77,7 @@ Response:
         username: string,
         fullname: string,
         email: string (NULL),
-        phone_number: string (NULL),
+        phone_int: string (NULL),
         last_activity: datetime,
         gender: string,
         date_of_birth: date,
@@ -407,7 +407,123 @@ Response:
     }
 
 VI. Family group
+1. Create Family group
+PATH: /user/family-group
+Method: POST
+Headers: 
+    {
+        Content-Type: "application/json",
+        authentication: jwt
+    }
+Body:
+    {
+        name: string  (required),
+        member_ids: int[] (required)
+    }
+Response:
+    {
+        message: "Tạo nhóm gia đình thành công.",
+        new_family: object
+    }
 
+2. Get Family groups
+PATH: /user/family-groups
+Method: GET
+Headers: 
+    {
+        Content-Type: "application/json",
+        authentication: jwt
+    }
+Response:
+    {
+        familiesAsLeader, familiesAsMember
+    }
+
+3. Get Family group
+PATH: /user/family-group?id=
+Method: GET
+Headers: 
+    {
+        Content-Type: "application/json",
+        authentication: jwt
+    }
+Response:
+    {
+        family_group: object
+    }
+
+4. Add family members
+PATH: /user/family-members
+Method: POST
+Headers: 
+    {
+        Content-Type: "application/json",
+        authentication: jwt
+    }
+Body:
+    {
+        family_group_id: int  (required),
+        member_ids: int[] (required)
+    }
+Response:
+    {
+        message: "Thêm thành công."
+    }
+
+5. Update family group
+PATH: /user/family-group
+Method: PUT
+Headers: 
+    {
+        Content-Type: "application/json",
+        authentication: jwt
+    }
+Body:
+    {
+        family_group_id: int (required),
+        newData: {
+            name: string (required)
+        }
+    }
+Response:
+    {
+        message: "Cập nhật thông tin gia đình thành công."
+    }
+
+6. Delete family member
+PATH: /user/family-member
+Method: DELETE
+Headers: 
+    {
+        Content-Type: "application/json",
+        authentication: jwt
+    }
+Body:
+    {
+        family_group_id: int (required),
+        member_id: int (required),
+    }
+Response:
+    {
+        message: "Xóa thành công."
+    }
+
+7. Delete Family group
+PATH: /user/family-group
+Method: DELETE
+Headers: 
+    {
+        Content-Type: "application/json",
+        authentication: jwt
+    }
+Body:
+    {
+        family_group_id: int (required),
+    }
+Response:
+    {
+        message: "Xóa thành công."
+    }
 
 -------------------ADMIN-------------------
 I. Authentication, Authorization
