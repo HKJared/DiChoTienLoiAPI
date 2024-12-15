@@ -3,6 +3,9 @@ const session = require('express-session');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 require('dotenv').config();
+
+const configViewEngine = require('./src/configs/viewEngine');
+
 // const passport = require('./src/utils/auth');
 
 // auth router
@@ -36,6 +39,8 @@ app.use(cors());
 app.use('/api/admin/', adminApiRouter);
 app.use('/api/user/', userApiRouter);
 app.use('/api/', apiRouter);
+
+configViewEngine(app);
 
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
