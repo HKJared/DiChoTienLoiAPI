@@ -1,6 +1,6 @@
 const LogModel = require('../models/logModel');
 const RecipeModel = require('../models/recipeModel');
-const {  deleteFileFromCloudinary } = require('../utils/upload');
+// const {  deleteFileFromCloudinary } = require('../utils/upload');
 const { validateRecipe } = require("../validators/recipeValidator");
 
 class RecipeController {
@@ -124,7 +124,7 @@ class RecipeController {
             const checkValid = validateRecipe(newData);
 
             if (!checkValid.isValid) {
-                deleteFileFromCloudinary(newData.image_url);
+                // deleteFileFromCloudinary(newData.image_url);
                 await LogModel.updateDetailLog(checkValid.errors, log_id);
 
                 return res.status(400).json({ message: checkValid.errors });
@@ -133,14 +133,14 @@ class RecipeController {
             const recipe = await RecipeModel.getRecipeByUser(recipe_id);
 
             if (!recipe) {
-                deleteFileFromCloudinary(newData.image_url);
+                // deleteFileFromCloudinary(newData.image_url);
                 await LogModel.updateDetailLog('Không tìm thấy công thức nấu ăn cần chỉnh sửa.', log_id);
 
                 return res.status(400).json({ message: 'Không tìm thấy công thức nấu ăn cần chỉnh sửa.' });
             }
 
             if (user_id != recipe.created_by) {
-                deleteFileFromCloudinary(newData.image_url);
+                // deleteFileFromCloudinary(newData.image_url);
                 await LogModel.updateDetailLog('Không phải chủ của công thức nấu ăn.', log_id);
 
                 return res.status(400).json({ message: 'Bạn không phải chủ của công thức nấu ăn này.' });
@@ -159,7 +159,7 @@ class RecipeController {
             }
 
             if (newData.image_url != recipe.image_url) { // nếu không sử dụng đường dẫn cũ
-                deleteFileFromCloudinary(recipe.image_url);
+                // deleteFileFromCloudinary(recipe.image_url);
             }
 
             const new_recipe = await RecipeModel.getRecipeByUser(recipe_id);
@@ -203,7 +203,7 @@ class RecipeController {
                 return res.status(400).json({ message: "Xóa công thức nấu ăn không thành công, vui lòng thử lại hoặc tải lại trang." });
             }
             
-            deleteFileFromCloudinary(recipe.image_url);
+            // deleteFileFromCloudinary(recipe.image_url);
 
             await LogModel.updateDetailLog('Cập nhật công thức nấu ăn thành công.', log_id);
             await LogModel.updateStatusLog(log_id)

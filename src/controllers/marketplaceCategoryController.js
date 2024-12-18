@@ -1,7 +1,7 @@
 const LogModel = require('../models/logModel');
 const MarketplaceCategoryModel = require('../models/marketplaceCategoryModel');
 const { validateMarketplaceCategory } = require('../validators/marketplaceCategoryValidator');
-const {  deleteFileFromCloudinary } = require('../utils/upload');
+// const {  deleteFileFromCloudinary } = require('../utils/upload');
 
 class MarketplaceCategoryController {
     static async createCategory(req, res) {
@@ -24,7 +24,7 @@ class MarketplaceCategoryController {
             const old_category = await MarketplaceCategoryModel.getCategoryByName(newCategory.name);
 
             if (old_category) {
-                deleteFileFromCloudinary(newCategory.image_url);
+                // deleteFileFromCloudinary(newCategory.image_url);
 
                 await LogModel.updateDetailLog(`Danh mục mua sắm "${ newCategory.name }" đã tồn tại.`, log_id);
 
@@ -38,7 +38,7 @@ class MarketplaceCategoryController {
             });
 
             if (!newCategoryId) {
-                deleteFileFromCloudinary(newCategory.image_url);
+                // deleteFileFromCloudinary(newCategory.image_url);
 
                 await LogModel.updateDetailLog(`Thêm vào database không thành công.`, log_id);
 

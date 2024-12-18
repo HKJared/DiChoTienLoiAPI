@@ -1,7 +1,7 @@
 const LogModel = require('../models/logModel');
 const MarketplaceItemModel = require('../models/marketplaceItemModel');
 const { validateMarketplaceCategory } = require('../validators/marketplaceCategoryValidator');
-const {  deleteFileFromCloudinary } = require('../utils/upload');
+// const {  deleteFileFromCloudinary } = require('../utils/upload');
 
 class MarketplaceItemController {
     static async createItem(req, res) {

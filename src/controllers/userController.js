@@ -3,7 +3,7 @@ const JWTService = require("../utils/jwtService");
 const LogModel = require("../models/logModel");
 const UserModel = require("../models/userModel");
 const VerificationModel = require("../models/verificationModel");
-const { deleteFileFromCloudinary } = require('../utils/upload');
+// const { deleteFileFromCloudinary } = require('../utils/upload');
 
 const { validateUserData } = require("../validators/userValidator");
 

@@ -1,6 +1,6 @@
 const LogModel = require('../models/logModel');
 const RecipeCategoryModel = require('../models/recipeCategoryModel');
-const {  deleteFileFromCloudinary } = require('../utils/upload');
+// const {  deleteFileFromCloudinary } = require('../utils/upload');
 
 class RecipeCategoryController {
     static async createCategory(req, res) {
@@ -23,7 +23,7 @@ class RecipeCategoryController {
             const old_category = await RecipeCategoryModel.getCategoryByName(newCategory.name);
 
             if (old_category) {
-                deleteFileFromCloudinary(newCategory.image_url);
+                // deleteFileFromCloudinary(newCategory.image_url);
 
                 await LogModel.updateDetailLog(`Danh mục mua sắm "${ newCategory.name }" đã tồn tại.`, log_id);
 
@@ -37,7 +37,7 @@ class RecipeCategoryController {
             });
 
             if (!newCategoryId) {
-                deleteFileFromCloudinary(newCategory.image_url);
+                // deleteFileFromCloudinary(newCategory.image_url);
 
                 await LogModel.updateDetailLog(`Thêm vào database không thành công.`, log_id);
 
