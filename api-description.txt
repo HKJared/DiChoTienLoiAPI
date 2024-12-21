@@ -525,6 +525,24 @@ Response:
         message: "Xóa thành công."
     }
 
+VII. User
+1. Get User by username or phone_number
+PATH: /user/user-username-or-phone-number?keyword=
+Method: GET
+Headers: 
+    {
+        Content-Type: "application/json",
+        authentication: jwt
+    }
+Response:
+    {
+        user: {
+            id: int,
+            v.v...
+        }
+    }
+
+
 -------------------ADMIN-------------------
 I. Authentication, Authorization
 adminstrator account: {

@@ -35,6 +35,8 @@ apiRouter.put('/family-group', authenticate, FamilyController.updateFamily);
 apiRouter.delete('/family-member', authenticate, FamilyController.deleteFamilyMember);
 apiRouter.delete('/family-group', authenticate, FamilyController.deleteFamily);
 
+apiRouter.get('/user-username-or-phone-number', authenticate, UserController.getUserByUsername);
+
 // upload file
 apiRouter.post('/upload', authenticate, uploadFiles);
 

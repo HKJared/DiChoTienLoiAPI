@@ -146,6 +146,21 @@ class UserController {
         }
     }
 
+    static async getUserByUsername(req, res) {
+        try {
+            const { keyword } = req.query;
+
+            const user = await UserModel.getUserByUsernameOrPhoneNumber(keyword || '');
+
+            // user.address = await UserModel.getAddressByUserId(user_id);
+
+            return res.status(200).json({ user: user });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: 'Lỗi từ phía server.' });
+        }
+    }
+
     static async getAdminInfo(req, res) {
         try {
             const user_id = req.user_id;
